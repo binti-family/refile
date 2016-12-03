@@ -72,8 +72,10 @@ module Refile
       filename = request.params.fetch("file").fetch(:filename)
       file = backend.upload(tempfile)
       url = Refile.file_url(file, filename: filename)
+      thumbnail_url =
+        Refile.file_url(file, :limit, 60, 40, filename: filename)
       content_type :json
-      { id: file.id, url: url }.to_json
+      { id: file.id, url: url, thumbnail_url: thumbnail_url }.to_json
     end
 
     get "/:backend/presign" do
