@@ -127,6 +127,8 @@ module Refile
       Refile.logger
     end
 
+    ALLOWED_DISPOSITIONS = %w{inline attachment}
+
     def stream_file(file)
       expires Refile.content_max_age, :public
 
@@ -139,7 +141,10 @@ module Refile
 
       filename = request.path.split("/").last
 
-      send_file path, filename: filename, disposition: "inline", type: ::File.extname(request.path)
+      disposition = params[:disposition] || "inline"
+      halt 400 unless ALLOWED_DISPOSITIONS.include?(disposition)
+
+      send_file path, filename: filename, disposition: disposition, type: ::File.extname(request.path)
     end
 
     def backend
