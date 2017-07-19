@@ -4,6 +4,7 @@ require "tempfile"
 require "rest_client"
 require "logger"
 require "mime/types"
+require "active_support/core_ext/hash"
 
 module Refile
   # @api private
@@ -306,7 +307,7 @@ module Refile
     # @param [String, nil] host            Override the host
     # @param [String, nil] prefix          Adds a prefix to the URL if the application is not mounted at root
     # @return [String, nil]                The generated URL
-    def file_url(file, *args, expires_at: nil, host: nil, prefix: nil, filename:, format: nil)
+    def file_url(file, *args, expires_at: nil, disposition: nil, host: nil, prefix: nil, filename:, format: nil)
       return unless file
 
       host ||= Refile.cdn_host
@@ -316,8 +317,13 @@ module Refile
       filename << "." << format.to_s if format
 
       base_path = ::File.join("", backend_name, *args.map(&:to_s), file.id.to_s, filename)
-      if expires_at
-        base_path += "?expires_at=#{expires_at.to_i}" # UNIX timestamp
+      if expires_at || disposition
+        query = {
+          expires_at: expires_at && expires_at.to_i, # UNIX timestamp
+          disposition: disposition
+        }.compact.to_query
+
+        base_path += "?#{query}"
       end
 
       ::File.join(app_url(prefix: prefix, host: host), token(base_path), base_path)
@@ -383,7 +389,7 @@ module Refile
     # @param [String, nil] host            Override the host
     # @param [String, nil] prefix          Adds a prefix to the URL if the application is not mounted at root
     # @return [String, nil]                The generated URL
-    def attachment_url(object, name, *args, expires_at: nil, host: nil, prefix: nil, filename: nil, format: nil)
+    def attachment_url(object, name, *args, expires_at: nil, disposition: nil, host: nil, prefix: nil, filename: nil, format: nil)
       attacher = object.send(:"#{name}_attacher")
       file = attacher.get
       return unless file
@@ -391,7 +397,7 @@ module Refile
       filename ||= attacher.basename || name.to_s
       format ||= attacher.extension
 
-      file_url(file, *args, expires_at: expires_at, host: host, prefix: prefix, filename: filename, format: format)
+      file_url(file, *args, expires_at: expires_at, disposition: disposition, host: host, prefix: prefix, filename: filename, format: format)
     end
 
     # Receives an instance of a class which has used the

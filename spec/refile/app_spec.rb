@@ -31,6 +31,29 @@ describe Refile::App do
       expect(last_response.headers["Content-Type"]).to include("text/html")
     end
 
+    it "sets inline as the default disposition" do
+      file = Refile.store.upload(StringIO.new("hello"))
+      get "/token/store/#{file.id}/hello"
+
+      expect(last_response.status).to eq(200)
+      expect(last_response.headers["Content-Disposition"]).to include("inline")
+    end
+
+    it "sets disposition as requested" do
+      file = Refile.store.upload(StringIO.new("hello"))
+      get "/token/store/#{file.id}/hello?disposition=attachment"
+
+      expect(last_response.status).to eq(200)
+      expect(last_response.headers["Content-Disposition"]).to include("attachment")
+    end
+
+    it "fails a bogus disposition request" do
+      file = Refile.store.upload(StringIO.new("hello"))
+      get "/token/store/#{file.id}/hello?disposition=bogus"
+
+      expect(last_response.status).to eq(400)
+    end
+
     it "returns a 404 if the file doesn't exist" do
       Refile.store.upload(StringIO.new("hello"))
 

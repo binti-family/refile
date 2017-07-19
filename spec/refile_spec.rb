@@ -176,6 +176,20 @@ RSpec.describe Refile do
       it "adds a format" do
         expect(Refile.attachment_url(instance, :document, format: "png")).to eq("/token/cache/#{id}/document.png")
       end
+
+      it "adds expires_at" do
+        expires_at = Time.now
+        expect(Refile.attachment_url(instance, :document, expires_at: expires_at)).to eq("/token/cache/#{id}/document?expires_at=#{expires_at.to_i}")
+      end
+
+      it "adds disposition" do
+        expect(Refile.attachment_url(instance, :document, disposition: "attachment")).to eq("/token/cache/#{id}/document?disposition=attachment")
+      end
+
+      it "adds expires_at and disposition simultaneously" do
+        expires_at = Time.now
+        expect(Refile.attachment_url(instance, :document, expires_at: expires_at, disposition: "attachment")).to eq("/token/cache/#{id}/document?disposition=attachment&expires_at=#{expires_at.to_i}")
+      end
     end
 
     context "with file with content type" do
