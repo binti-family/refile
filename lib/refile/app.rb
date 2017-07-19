@@ -127,7 +127,7 @@ module Refile
       Refile.logger
     end
 
-    ALLOWED_DISPOSITIONS = %w{inline attachment}
+    ALLOWED_DISPOSITIONS = %w[inline attachment]
 
     def stream_file(file)
       expires Refile.content_max_age, :public
