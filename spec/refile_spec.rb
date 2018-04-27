@@ -177,6 +177,10 @@ RSpec.describe Refile do
         expect(Refile.attachment_url(instance, :document, format: "png")).to eq("/token/cache/#{id}/document.png")
       end
 
+      it "adds public" do
+        expect(Refile.attachment_url(instance, :document, public_access: true)).to eq("/token/cache/#{id}/document?public=true")
+      end
+
       it "adds expires_at" do
         expires_at = Time.now
         expect(Refile.attachment_url(instance, :document, expires_at: expires_at)).to eq("/token/cache/#{id}/document?expires_at=#{expires_at.to_i}")
