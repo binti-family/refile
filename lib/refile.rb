@@ -130,6 +130,12 @@ module Refile
     # @return [String]
     attr_accessor :secret_key
 
+    # Callable that determines the mime type to provide for downloads
+    #
+    # Receives the file id, local file path, and request path in a hash
+    # with keys :id, :path, and :request_path, respectively.
+    attr_accessor :content_file_typer
+
     # A global registry of backends.
     #
     # @return [Hash{String => Backend}]

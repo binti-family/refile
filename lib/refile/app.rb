@@ -144,7 +144,14 @@ module Refile
       disposition = params[:disposition] || "inline"
       halt 400 unless ALLOWED_DISPOSITIONS.include?(disposition)
 
-      send_file path, filename: filename, disposition: disposition, type: ::File.extname(request.path)
+      type =
+        if Refile.content_file_typer
+          Refile.content_file_typer.call(id: params[:id], path: path, request_path: request.path)
+        else
+          ::File.extname(request.path)
+        end
+
+      send_file path, filename: filename, disposition: disposition, type: type
     end
 
     def backend
