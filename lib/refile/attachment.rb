@@ -84,8 +84,8 @@ module Refile
         define_method "remote_#{name}_url" do
         end
 
-        define_method "#{name}_url" do |*args|
-          Refile.attachment_url(self, name, *args)
+        define_method "#{name}_url" do |*args, **kwargs|
+          Refile.attachment_url(self, name, *args, **kwargs)
         end
 
         define_method "#{name}_data" do
