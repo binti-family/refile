@@ -8,14 +8,15 @@ require "jquery/rails"
 
 module Refile
   class TestApp < Rails::Application
-    config.middleware.delete "ActionDispatch::Cookies"
-    config.middleware.delete "ActionDispatch::Session::CookieStore"
-    config.middleware.delete "ActionDispatch::Flash"
+    config.middleware.delete ActionDispatch::Cookies
+    config.middleware.delete ActionDispatch::Session::CookieStore
+    config.middleware.delete ActionDispatch::Flash
     config.active_support.deprecation = :log
     config.eager_load = false
     config.action_dispatch.show_exceptions = false
     config.consider_all_requests_local = true
     config.root = ::File.expand_path("test_app", ::File.dirname(__FILE__))
+    config.load_defaults 7.2
   end
 
   Rails.backtrace_cleaner.remove_silencers!
@@ -28,7 +29,7 @@ require "capybara/rails"
 require "capybara/rspec"
 require "refile/spec_helper"
 require "refile/active_record_helper"
-require "capybara/poltergeist"
+require "selenium-webdriver"
 
 if ENV["SAUCE_BROWSER"]
   Capybara.register_driver :selenium do |app|
@@ -40,7 +41,7 @@ if ENV["SAUCE_BROWSER"]
   end
 end
 
-Capybara.javascript_driver = :poltergeist
+Capybara.javascript_driver = :selenium_chrome_headless
 
 Capybara.configure do |config|
   config.server_port = 56_120
