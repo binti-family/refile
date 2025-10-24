@@ -135,7 +135,7 @@ describe Refile::App do
         end
 
         context "with a valid `expires_at`" do
-          let(:expires_at) { (Time.now + 1.seconds).to_i }
+          let(:expires_at) { (Time.now + 1).to_i }
 
           it "accepts the expires at" do
             token =
@@ -149,7 +149,7 @@ describe Refile::App do
         end
 
         context "with an `expires_at` in the past" do
-          let(:expires_at) { (Time.now - 1.seconds).to_i }
+          let(:expires_at) { (Time.now - 1).to_i }
 
           it "returns a 403" do
             token =

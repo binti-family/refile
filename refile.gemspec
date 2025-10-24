@@ -12,9 +12,9 @@ Gem::Specification.new do |spec|
   spec.files         = `git ls-files lib spec app config Readme.md`.split($/).reject { |f| f.include?("test_app") }
   spec.require_paths = %w[lib spec] # spec is used by backend gems to run their tests
 
-  spec.required_ruby_version = ">= 2.1.0"
+  spec.required_ruby_version = ">= 2.7.8"
 
-  spec.add_dependency "sinatra", ">= 2.0.0", "<= 3.0.0"
+  spec.add_dependency "sinatra", ">= 2.0.0", "< 5.0"
   spec.add_dependency "rest-client", "> 1.8"
   spec.add_dependency "mime-types"
 end
